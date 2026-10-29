@@ -1,0 +1,25 @@
+[project]
+name = "rtx4060-kachow"
+version = "0.2.1"
+description = "Secure Boot (shim + MOK) boot chain for the RTX 4060 Laptop tensor-rate unlock"
+requires-python = ">=3.11"
+license = "GPL-2.0-only"
+authors = [{ name = "Brandon Stonebridge" }]
+
+[project.urls]
+Homepage = "https://github.com/st0nebridge/RTX4060-Kachow"
+Repository = "https://github.com/st0nebridge/RTX4060-Kachow"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["src/kachow"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:"]

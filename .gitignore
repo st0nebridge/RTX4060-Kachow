@@ -1,0 +1,36 @@
+# Dependencies / build / secrets
+node_modules/
+vendor/
+dist/
+build/
+.env
+.env.*
+.DS_Store
+*.log
+tmp/
+cache/
+secrets/
+
+# Machine state: signing keys, NVIDIA firmware, third-party and built EFI images,
+# the upstream checkout, install record and registry backups. Never committed.
+local/
+*.key
+*.pfx
+*.pem
+*.cer
+*.efi
+*.EFI
+*.bin
+*.reg
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+cosmic-ray*.sqlite

@@ -1,0 +1,7 @@
+NVIDIA GeForce RTX 4060 Laptop GPU  torch 2.11.0+cu128  8192^3 x 50, best of 3
+  fp16_acc16     45.7 TFLOPS   ratio to fp16_acc16 = 1.00
+  fp16_acc32     45.5 TFLOPS   ratio to fp16_acc16 = 1.00
+  bf16_acc32     46.9 TFLOPS   ratio to fp16_acc16 = 1.02
+  tf32           22.6 TFLOPS   ratio to fp16_acc16 = 0.49
+FP32-accumulate tensor rate: UNLOCKED
+{"fp16_acc16": 45.75, "fp16_acc32": 45.52, "bf16_acc32": 46.88, "tf32": 22.64}

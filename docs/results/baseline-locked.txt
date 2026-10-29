@@ -1,0 +1,9 @@
+<venv>\Lib\site-packages\torch\_subclasses\functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\utils\tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+NVIDIA GeForce RTX 4060 Laptop GPU  torch 2.11.0+cu128  8192^3 x 50, best of 3
+  fp16_acc16     49.1 TFLOPS   ratio to fp16_acc16 = 1.00
+  fp16_acc32     29.6 TFLOPS   ratio to fp16_acc16 = 0.60
+  bf16_acc32     30.2 TFLOPS   ratio to fp16_acc16 = 0.61
+  tf32           14.7 TFLOPS   ratio to fp16_acc16 = 0.30
+FP32-accumulate tensor rate: LOCKED (half rate)
+{"fp16_acc16": 49.09, "fp16_acc32": 29.61, "bf16_acc32": 30.15, "tf32": 14.72}

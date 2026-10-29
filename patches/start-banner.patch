@@ -1,0 +1,72 @@
+--- a/app.c
++++ b/app.c
+@@ -122,6 +122,7 @@ EFI_STATUS EFIAPI GU_ENTRY(EFI_HANDLE image,EFI_SYSTEM_TABLE *t) {
+     "none"
+ #endif
+     );
++  GuBootBanner();
+   GuBootNote("RTX 4060 Laptop unlock (%s)\n",GU_BUILD_ID);
+   /* Stage Windows first: every skip below (Secure Boot included) then ends in a stock Windows start. */
+   stage="windows-image";s=GuBootLoadWindows();
+--- a/boot_io.c
++++ b/boot_io.c
+@@ -148,6 +148,48 @@ static EFI_STATUS ReadFile(EFI_FILE_PROTOCOL *root,const CHAR16 *name,UINTN min,
+   EFI_STATUS closed=f->Close(f);if(s==EFI_SUCCESS)s=closed;
+   if(s!=EFI_SUCCESS){GuFree(p);return s;}*data=p;*size=expected;return EFI_SUCCESS;
+ }
++/* Start-screen banner written by `kachow banner`: UCS-2, printable characters and CR LF only.
++   The art is shown when the console can draw every line, else its ASCII copy; a missing or
++   malformed file shows nothing. Display only: nothing here decides whether the unlock runs. */
++#define BANNER_MAX 16384U
++static EFI_STATUS LoadBanner(const CHAR16 *name,const char *label,BOOLEAN ascii,CHAR16 **text) {
++  VOID *p=NULL;UINTN size=0;CHAR16 *t=NULL;*text=NULL;
++  EFI_STATUS s=ReadFile(Root,name,2,BANNER_MAX,&p,&size);
++  if(s==EFI_SUCCESS&&(size&1))s=EFI_COMPROMISED_DATA;
++  for(UINTN i=0;s==EFI_SUCCESS&&i<size/2;i++) {
++    CHAR16 c=((const CHAR16 *)p)[i];
++    if((c<0x20&&c!=L'\r'&&c!=L'\n')||(ascii&&c>0x7e)||(c>=0xd800&&c<0xe000))s=EFI_COMPROMISED_DATA;
++  }
++  if(s==EFI_SUCCESS){t=GuAlloc(size+2);if(!t)s=EFI_OUT_OF_RESOURCES;}
++  if(s==EFI_SUCCESS){memcpy(t,p,size);t[size/2]=0;*text=t;}
++  GuFree(p);
++  Trace("banner %s: status=%#llx\n",label,(unsigned long long)s);
++  return s;
++}
++/* TestString line by line: CR and LF have no glyph, and some consoles refuse a string holding them. */
++static BOOLEAN Drawable(CHAR16 *t) {
++  EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *o=Table->ConOut;
++  if(!o->TestString)return FALSE;
++  for(CHAR16 *line=t;*line;) {
++    CHAR16 *end=line;while(*end&&*end!=L'\r'&&*end!=L'\n')end++;
++    CHAR16 keep=*end;*end=0;
++    BOOLEAN ok=end==line||o->TestString(o,line)==EFI_SUCCESS;
++    *end=keep;if(!ok)return FALSE;
++    line=end;while(*line==L'\r'||*line==L'\n')line++;
++  }
++  return TRUE;
++}
++VOID GuBootBanner(VOID) {
++  if(Silent||!Root||!Table||!Table->ConOut||!Table->ConOut->OutputString)return;
++  CHAR16 *t=NULL;
++  if(LoadBanner(L"\\GPU4090-ASSETS\\banner.txt","banner.txt",FALSE,&t)!=EFI_SUCCESS)return;
++  if(!Drawable(t)) {
++    GuFree(t);t=NULL;Trace("banner: the console cannot draw every glyph; showing the ASCII copy\n");
++    if(LoadBanner(L"\\GPU4090-ASSETS\\banner-ascii.txt","banner-ascii.txt",TRUE,&t)!=EFI_SUCCESS)return;
++  }
++  Table->ConOut->OutputString(Table->ConOut,t);
++  GuFree(t);
++}
+ EFI_STATUS GuBootLoadAssets(VOID) {
+   static const CHAR16 *names[]={L"\\GPU4090-ASSETS\\booter_load_ad102.bin",L"\\GPU4090-ASSETS\\v67-ad102-610.43.03-four-plm.bin",
+     L"\\GPU4090-ASSETS\\gsp_ga10x.bin",L"\\GPU4090-ASSETS\\gsp_boot_ad102.bin",L"\\GPU4090-ASSETS\\gsp_boot_desc_ad102.bin"};
+--- a/boot_io.h
++++ b/boot_io.h
+@@ -7,6 +7,8 @@ typedef enum {GU_CHOICE_UNLOCK=1,GU_CHOICE_WINDOWS} GU_CHOICE;
+    outside the app's own two directories is ever written. */
+ EFI_STATUS GuBootOpen(EFI_HANDLE,EFI_SYSTEM_TABLE *);
+ EFI_STATUS GuBootLoadAssets(VOID);
++/* Prints \GPU4090-ASSETS\banner.txt (or its ASCII copy) when present; never fails the run. */
++VOID GuBootBanner(VOID);
+ /* Finds the Windows boot manager at run time (the firmware's own "Windows Boot Manager"
+    boot entry first, else the only volume holding \EFI\Microsoft\Boot\bootmgfw.efi),
+    reads it, and LoadImages it. Read-only; content is logged, never pinned. */

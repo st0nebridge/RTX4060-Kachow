@@ -1,0 +1,132 @@
+--- a/app.c	2026-10-28 04:53:15.010487200 +0000
++++ b/app.c	2026-10-28 05:36:47.753260700 +0000
+@@ -33,6 +33,7 @@
+ 
+ static EFI_GUID PciGuid=EFI_PCI_IO_PROTOCOL_GUID;
+ static EFI_GUID GlobalGuid={0x8be4df61,0x93ca,0x11d2,{0xaa,0x0d,0x00,0xe0,0x98,0x03,0x2b,0x8c}};
++static EFI_GUID ShimLockGuid={0x605dab50,0xe046,0x4300,{0xab,0xb6,0x3d,0xd8,0x10,0xdd,0x8b,0x23}};
+ static EFI_SYSTEM_TABLE *Table;
+ 
+ /* Exactly one 10de:28a0 anywhere in the system; its slot and BAR0 are read, not assumed. */
+@@ -134,7 +135,14 @@
+     s=t->RuntimeServices->GetVariable(L"SecureBoot",&GlobalGuid,NULL,&n,&secure);
+     /* An unsigned image only runs with Secure Boot off; a firmware without the variable has none. */
+     if(s==EFI_NOT_FOUND)s=EFI_SUCCESS;
+-    else if(s==EFI_SUCCESS&&(n!=1||secure))s=EFI_SECURITY_VIOLATION;
++    else if(s==EFI_SUCCESS&&(n!=1||secure)) {
++      /* Signed build: under Secure Boot, accept only a start through shim, which verified this image. */
++      VOID *lock=NULL;EFI_BOOT_SERVICES *bs=t->BootServices;
++      if(n==1&&bs->LocateProtocol&&bs->LocateProtocol(&ShimLockGuid,NULL,&lock)==EFI_SUCCESS&&lock) {
++        GuLog("Secure Boot on: started through shim (MOK-verified image)\n");
++        s=EFI_SUCCESS;
++      } else s=EFI_SECURITY_VIOLATION;
++    }
+     if(s!=EFI_SUCCESS)goto skip;
+   }
+   stage="discover";s=Discover(image);if(s!=EFI_SUCCESS||Gu.fault)goto skip;
+--- a/release.c	2026-10-28 04:53:15.640012200 +0000
++++ b/release.c	2026-10-28 07:13:03.708038000 +0000
+@@ -196,6 +196,31 @@
+ }
+ /* GOPs with a framebuffer whose device path descends from this GPU: screens, and the rest (a mode
+    that is not a screen). GOPs of other devices, and virtual or blt-only ones, are not counted. */
++/* A GOP without a device path (the console splitter's) is attributable only when another GOP with a
++   path to a PCI device has the very same framebuffer: it mirrors that screen, which is counted (or
++   ignored, if another device's) through its own path. Unmatched, it stays unattributable. */
++static BOOLEAN Mirror(EFI_HANDLE *h,UINTN count,const EFI_GRAPHICS_OUTPUT_PROTOCOL *m) {
++  for(UINTN j=0;j<count;j++) {
++    EFI_GRAPHICS_OUTPUT_PROTOCOL *g=NULL;EFI_DEVICE_PATH_PROTOCOL *path=NULL,*left;EFI_HANDLE parent=NULL;
++    if(Gu.bs->HandleProtocol(h[j],&GopGuid,(VOID **)&g)!=EFI_SUCCESS||!g||g==m||!g->Mode)continue;
++    if(g->Mode->FrameBufferBase!=m->Mode->FrameBufferBase||g->Mode->FrameBufferSize!=m->Mode->FrameBufferSize)continue;
++    if(Gu.bs->HandleProtocol(h[j],&PathGuid,(VOID **)&path)!=EFI_SUCCESS||!path)continue;
++    left=path;
++    if(!EFI_ERROR(Gu.bs->LocateDevicePath(&PciGuid,&left,&parent))&&parent)return TRUE;
++  }
++  return FALSE;
++}
++/* After the GPU's display driver stops, the console splitter keeps advertising the mode of the screen
++   it mirrored. Only the console-out GOP, with exactly the framebuffer of a screen this GPU's driver
++   owned at preflight, is recognised as that stale copy; it is neither a screen nor a remaining GOP. */
++static BOOLEAN StaleOwnScreen(EFI_HANDLE h,const EFI_GRAPHICS_OUTPUT_PROTOCOL *g) {
++  if(h!=Plan.console_out||!g->Mode->FrameBufferBase)return FALSE;
++  for(UINTN i=0;i<Plan.owner.child_count;i++) {
++    const CHILD *c=&Plan.owner.children[i];
++    if(c->screen&&c->framebuffer==g->Mode->FrameBufferBase&&c->framebuffer_size==g->Mode->FrameBufferSize)return TRUE;
++  }
++  return FALSE;
++}
+ static EFI_STATUS GopCount(UINTN *screens,UINTN *rest) {
+   EFI_HANDLE *h=NULL;UINTN count=0;*screens=*rest=0;
+   EFI_STATUS s=Gu.bs->LocateHandleBuffer(ByProtocol,&GopGuid,NULL,&count,&h);
+@@ -206,7 +231,11 @@
+     s=Gu.bs->HandleProtocol(h[i],&GopGuid,(VOID **)&g);
+     if(EFI_ERROR(s)||!g){s=EFI_COMPROMISED_DATA;break;}
+     if(!g->Mode||(!g->Mode->FrameBufferBase&&!g->Mode->FrameBufferSize))continue; /* virtual / blt-only */
+-    if(Gu.bs->HandleProtocol(h[i],&PathGuid,(VOID **)&path)!=EFI_SUCCESS||!path){s=EFI_UNSUPPORTED;break;}
++    if(Gu.bs->HandleProtocol(h[i],&PathGuid,(VOID **)&path)!=EFI_SUCCESS||!path) {
++      if(Mirror(h,count,g))continue; /* console splitter mirroring a GOP that has a path */
++      if(StaleOwnScreen(h[i],g))continue; /* console splitter still showing our released screen */
++      s=EFI_UNSUPPORTED;break;
++    }
+     EFI_HANDLE parent=NULL;EFI_DEVICE_PATH_PROTOCOL *left=path;
+     if(EFI_ERROR(Gu.bs->LocateDevicePath(&PciGuid,&left,&parent))||parent!=Gu.handle)continue; /* another device's */
+     s=GpuPath(h[i],&path,&bytes);if(EFI_ERROR(s))break; /* ours, malformed path */
+@@ -224,6 +253,28 @@
+   if(want)return screens>0&&screens<=MAX_CHILDREN;
+   return Plan.owner.child_count?screens<=MAX_CHILDREN:!screens;
+ }
++/* Diagnostic only: every GOP in the system, whether it descends from this GPU, and the console handles. */
++static VOID LogGops(VOID) {
++  EFI_HANDLE *h=NULL;UINTN count=0,screens=0,rest=0;
++  EFI_STATUS s=Gu.bs->LocateHandleBuffer(ByProtocol,&GopGuid,NULL,&count,&h);
++  NOTE("diag: GOP handles=%zu status=%#llx owner_children=%zu\n",(size_t)count,(unsigned long long)s,(size_t)Plan.owner.child_count);
++  for(UINTN i=0;s==EFI_SUCCESS&&h&&i<count&&i<128;i++) {
++    EFI_GRAPHICS_OUTPUT_PROTOCOL *g=NULL;EFI_DEVICE_PATH_PROTOCOL *path=NULL;EFI_HANDLE parent=NULL;
++    if(Gu.bs->HandleProtocol(h[i],&GopGuid,(VOID **)&g)!=EFI_SUCCESS||!g){NOTE("diag: gop[%u] unreadable\n",(unsigned)i);continue;}
++    BOOLEAN has_path=Gu.bs->HandleProtocol(h[i],&PathGuid,(VOID **)&path)==EFI_SUCCESS&&path;
++    EFI_DEVICE_PATH_PROTOCOL *left=path;
++    EFI_STATUS p=has_path?Gu.bs->LocateDevicePath(&PciGuid,&left,&parent):EFI_NOT_FOUND;
++    NOTE("diag: gop[%u] handle=%#llx mode=%u fb=%#llx size=%#llx %ux%u path=%u pci_parent=%#llx ours=%u console=%u\n",(unsigned)i,
++      (unsigned long long)(UINTN)h[i],g->Mode!=NULL,g->Mode?(unsigned long long)g->Mode->FrameBufferBase:0ULL,
++      g->Mode?(unsigned long long)g->Mode->FrameBufferSize:0ULL,g->Mode&&g->Mode->Info?g->Mode->Info->HorizontalResolution:0U,
++      g->Mode&&g->Mode->Info?g->Mode->Info->VerticalResolution:0U,has_path,EFI_ERROR(p)?0ULL:(unsigned long long)(UINTN)parent,
++      !EFI_ERROR(p)&&parent==Gu.handle,h[i]==Plan.console_out);
++  }
++  if(h)Gu.bs->FreePool(h);
++  s=GopCount(&screens,&rest);
++  NOTE("diag: GopCount status=%#llx screens=%zu rest=%zu; console_out=%#llx gpu=%#llx\n",(unsigned long long)s,(size_t)screens,(size_t)rest,
++    (unsigned long long)(UINTN)Plan.console_out,(unsigned long long)(UINTN)Gu.handle);
++}
+ static EFI_STATUS Alive(VOID) {
+   EFI_SYSTEM_TABLE *t=Plan.table;
+   if(t->ConsoleOutHandle!=Plan.console_out||t->ConsoleInHandle!=Plan.console_in||t->StandardErrorHandle!=Plan.console_err||
+@@ -309,8 +360,9 @@
+   if(s==EFI_SUCCESS&&!(Plan.attributes&EFI_PCI_IO_ATTRIBUTE_MEMORY))s=EFI_NOT_READY;
+   if(s==EFI_SUCCESS)s=Bar();
+   if(s==EFI_SUCCESS)s=FindOwner(&Plan.owner,TRUE);
+-  if(s==EFI_SUCCESS&&!Gops(TRUE))s=EFI_NOT_READY;
+-  if(s==EFI_SUCCESS&&Alive()!=EFI_SUCCESS)s=EFI_NOT_READY;
++  if(s==EFI_SUCCESS)LogGops();
++  if(s==EFI_SUCCESS&&!Gops(TRUE)){NOTE("preflight: GOP check failed\n");s=EFI_NOT_READY;}
++  if(s==EFI_SUCCESS&&Alive()!=EFI_SUCCESS){NOTE("preflight: console check failed\n");s=EFI_NOT_READY;}
+   if(s==EFI_SUCCESS)NOTE("release preflight: slot=%zu:%zu:%zu.%zu bar0=%#llx attributes=%#llx driver=%u display_children=%zu bme_entry=%u\n",
+     seg,bus,dev,fun,(unsigned long long)Gu.bar_base,(unsigned long long)Plan.attributes,Plan.owner.agent!=NULL,(size_t)Plan.owner.child_count,Plan.bme_entry);
+   for(UINTN i=0;s==EFI_SUCCESS&&i<Plan.owner.child_count;i++){
+@@ -423,7 +475,7 @@
+   NOTE("driver release: status=%#llx refresh=%#llx same_pci=%u\n",(unsigned long long)released,(unsigned long long)refreshed,Gu.pci==prior);
+   s=EFI_ERROR(released)?released:EFI_ERROR(refreshed)?refreshed:Gu.pci!=prior?EFI_COMPROMISED_DATA:EFI_SUCCESS;
+   if(s==EFI_SUCCESS)s=Claim();
+-  if(s==EFI_SUCCESS&&!Gops(FALSE))s=EFI_NOT_READY;
++  if(s==EFI_SUCCESS&&!Gops(FALSE)){NOTE("release: a GOP of this GPU remains\n");LogGops();s=EFI_NOT_READY;}
+   if(s==EFI_SUCCESS)s=RestoreDecode();
+   if(s==EFI_SUCCESS)s=ClearBme();
+   if(s==EFI_SUCCESS){s=ReadConfig(c);if(s==EFI_SUCCESS&&!SameConfig(c,Plan.config,TRUE))s=EFI_NOT_READY;}
+@@ -467,7 +519,7 @@
+   s=ReadConfig(c);
+   /* After reconnect the command register must be the original one and bus master clear. */
+   if(!EFI_ERROR(s)&&!SameAfterDriver(c)){SameConfig(c,Plan.config,TRUE);s=EFI_NOT_READY;}
+-  if(!*gop)NOTE("GOP did not come back (children expected=%zu)\n",(size_t)Plan.owner.child_count);
++  if(!*gop){NOTE("GOP did not come back (children expected=%zu)\n",(size_t)Plan.owner.child_count);LogGops();}
+   return s;
+ }
+ EFI_STATUS GuRelFinish(BOOLEAN *gop) {

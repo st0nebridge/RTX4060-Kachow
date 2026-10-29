@@ -1,0 +1,63 @@
+{
+  "upstream": {
+    "repository": "https://github.com/NekoMirra/rtx4060-laptop-tensor-unlock.git",
+    "commit": "7c6a43e470b21f79292fa3cf1453017d606b3e33",
+    "license": "GPL-2.0-only",
+    "patches": ["patches/secureboot-shim.patch", "patches/start-banner.patch"]
+  },
+  "toolchain": {
+    "zig": {
+      "version": "0.14.1",
+      "url": "https://ziglang.org/download/0.14.1/zig-x86_64-windows-0.14.1.zip",
+      "sha256": "554f5378228923ffd558eac35e21af020c73789d87afeabf4bfd16f2e6feed2c",
+      "path": "tools/zig-x86_64-windows-0.14.1/zig.exe"
+    }
+  },
+  "files": {
+    "efi/shimx64.efi": {
+      "sha256": "d51bd80c4d3064d787e65cf16f74ca3773fd706ba2753327bb98df85ab2a8092",
+      "source": "usr/lib/shim/shimx64.efi.dualsigned from http://archive.ubuntu.com/ubuntu/pool/main/s/shim-signed/shim-signed_1.59+15.8-0ubuntu2_amd64.deb (sha256 f8ed71ce2d91a304b6d5eb84997f846f331b554578bc02dbfe78e13ad8ac81a9)"
+    },
+    "efi/mmx64.efi": {
+      "sha256": "5f9fc41db3dfe3b581fc20cae696af82c5ca21e96071ec9c4c28ee4a15f989d8",
+      "source": "usr/lib/shim/mmx64.efi from the same shim-signed 1.59 package"
+    },
+    "assets/booter_load_ad102.bin": {
+      "sha256": "6ee05b20e1dc244c08c052f36ef28469b8d09f4955d1fe33e48a179e11a7fd49",
+      "source": "upstream assets/ (NVIDIA driver 610.43.03 firmware, NVIDIA license)"
+    },
+    "assets/v67-ad102-610.43.03-four-plm.bin": {
+      "sha256": "44c36b2d6b3424e53e18f3e55db85c833655de071ce66ce42749588a4a7dc8cb",
+      "source": "upstream assets/"
+    },
+    "assets/gsp_ga10x.bin": {
+      "sha256": "572373620a37418f24dc16b5031c39338778c3257e48e8408de9a57291b24f3a",
+      "source": "upstream assets/"
+    },
+    "assets/gsp_boot_ad102.bin": {
+      "sha256": "45d6335a8185d6ff13e8d1484cea73f68d3d13aa1c19dc080ed1c3482dd5bac0",
+      "source": "upstream assets/"
+    },
+    "assets/gsp_boot_desc_ad102.bin": {
+      "sha256": "83f8f3f1f5f9496e0ea8fc7103c2beb64d0b6de2f5ffe725f13514de5a95fa42",
+      "source": "upstream assets/"
+    },
+    "assets/NVIDIA-LICENSE": {
+      "sha256": "2d3e7a09daf6ee443efe7f75bc5a74102fb26bf458c0cbea18947a61f2555adb",
+      "source": "upstream assets/"
+    }
+  },
+  "builds": {
+    "UNLOCK4090": "7ccd98fdb59730e57ce3aa6d3958f7fac0366c517b2a453ea161603cbc2c2cd4",
+    "UNLOCK4090M": "d98544be965a0884e9c192eed62d67b97a8cdf77f251f92d8601a48448351cdb",
+    "DRYRUN4090": "d08184c657f228aec4a860458221addc63219f9de244e35b6959d39a2e2a6237",
+    "RELTEST4090": "b47edcea9efe802c5d332244843aab5cbfcf3c5446ee77f5cff549748402b5c3"
+  },
+  "signed": {
+    "_note": "MOK-signed images (CN=Tensor Unlock MOK, thumbprint ECD4ED67A2B3CDD5C544B9A9A18ACB6AC4BD1FCF); valid only for this key",
+    "auto-grubx64.efi": "af47ac176e9bdd334b0583c061fb0979eabaf166f33c6b1ab6f037ed857a14b1",
+    "manual-grubx64.efi": "164c066bfa6ffa59cd43a04e7318a64d1361baa48f1bf27765a26204313bf21b",
+    "dryrun-grubx64.efi": "d51b3ed4a5b1f36decf8e5c347b846cadb667e678e90ed1e47e1f6bfcf1bfcd3",
+    "reltest-grubx64.efi": "578b82b17d104515a9e6fe5ab47d47b5f17087c3d6b8f3c3d5c73add6f81aada"
+  }
+}

@@ -1,0 +1,215 @@
+RTX 4060 Laptop unlock build=auto profile=entryLatchedSs1Full
+RTX 4060 Laptop unlock (auto)
+Windows Boot Manager entry in BootOrder: found
+bootmgfw.efi on volume 0 (boot-entry match=1)
+Windows boot manager volumes: found=1 matching-boot-entry=1
+bootmgfw.efi bytes=3086680 sha256=2d60a2203865122dad22772136b3d905167d9dcf926d602bb5f48b3b6668abec (logged, not pinned)
+Windows image staged: status=0
+Secure Boot on: started through shim (MOK-verified image)
+PCI scan: 10de:28a0 functions found=1 status=0
+GPU at 0:1:0.0 subsystem=0x159c1025 class_rev=0x30000a1 BAR0=0x61000000 pm=0x60 pcie=0x78 v2 msi=0x68 msix=0
+PCIe device capability=0x112c8de1 FLR_capable=1
+reg PMC_BOOT_0 0 = 0x197000a1
+reg GFW_PLM 0x118128 = 0x8b8f
+reg GFW_BOOT 0x118234 = 0x3ff
+reg GFW_CPUCTL 0x110100 = 0x10
+reg WPR2_LO 0x1fa824 = 0x1ffffe00
+reg WPR2_HI 0x1fa828 = 0
+reg FEAT_OVR_PLM 0x823804 = 0xffffff8f
+reg READOUT_0 0x823814 = 0x233
+reg READOUT_1 0x823818 = 0x410080
+reg SS0 0x82381c = 0x2707044
+reg SS1 0x823820 = 0x5
+reg VRAM_MIB 0x1183a4 = 0x1ffc
+asset 0 gpu-unlock/610.43.03/booter_load_ad102.bin: status=0
+asset 1 gpu-unlock/610.43.03/v67-ad102-610.43.03-four-plm.bin: status=0
+asset 2 gpu-unlock/610.43.03/gsp_ga10x.bin: status=0
+asset 3 gpu-unlock/610.43.03/gsp_boot_ad102.bin: status=0
+asset 4 gpu-unlock/610.43.03/gsp_boot_desc_ad102.bin: status=0
+asset gpu-unlock/610.43.03/booter_load_ad102.bin bytes=57672 sha256=6ee05b20e1dc244c08c052f36ef28469b8d09f4955d1fe33e48a179e11a7fd49 reference=match
+asset gpu-unlock/610.43.03/v67-ad102-610.43.03-four-plm.bin bytes=64000 sha256=44c36b2d6b3424e53e18f3e55db85c833655de071ce66ce42749588a4a7dc8cb reference=match
+asset gpu-unlock/610.43.03/gsp_ga10x.bin bytes=84277400 (not hashed)
+asset gpu-unlock/610.43.03/gsp_boot_ad102.bin bytes=36864 sha256=45d6335a8185d6ff13e8d1484cea73f68d3d13aa1c19dc080ed1c3482dd5bac0 reference=match
+asset gpu-unlock/610.43.03/gsp_boot_desc_ad102.bin bytes=84 sha256=83f8f3f1f5f9496e0ea8fc7103c2beb64d0b6de2f5ffe725f13514de5a95fa42 reference=match
+gpu_unlock: ROM chain: pos=0 data=0x52494350 bytes=64512 type=0 last=0
+gpu_unlock: ROM chain: pos=0xfc00 data=0x52494350 bytes=85504 type=0x3 last=0
+gpu_unlock: ROM chain: pos=0x24a00 data=0x5344504e bytes=24576 type=0xe0 last=0
+gpu_unlock: ROM chain: pos=0x2aa00 data=0x5344504e bytes=489472 type=0xe0 last=128
+gpu_unlock: ROM expansion: base=0xfc00 ext=0x24a00 adjust=0x14e00
+gpu_unlock: ROM BIT: offset=0x1b0 size=12 stride=6 tokens=19 adjust=0x14e00
+gpu_unlock: ROM ucode table: offset=0xa200b version=1 header=6 stride=6 entries=16
+gpu_unlock: FWSEC descriptor: offset=0x4536c ROM_bytes=1048576 header=0x32c0301
+gpu_unlock: FWSEC geometry: image_off=0x45698 size=0x10500 imem=0xf700 va=0 pa=0 dmem=0xd80 pa=0 pkc=0xb24 interface=0x1c engine=0x400 ucode=9 signatures=2 versions=0x3 bytes=768
+FWSEC from this card's VBIOS: image_off=0x45698 image_size=0x10500 imem=0xf700 dmem=0xd80 sigs=2 fuse_versions=0x3
+ownership: records=19 exclusive=0 status=0
+owner[0] protocol=fe47349a attributes=0x2 count=3 agent=0x3686af98 controller=0x36f9ec98
+owner[1] protocol=fe47349a attributes=0x2 count=4 agent=0x3c9f3b60 controller=0x36f9ec98
+owner[2] protocol=3bc1b285 attributes=0x1 count=5 agent=0x3b9def98 controller=0
+owner[3] protocol=4006c0c1 attributes=0x1 count=1 agent=0x3b9def98 controller=0
+owner[4] protocol=4cf5b200 attributes=0x1 count=136 agent=0x3b9def98 controller=0
+owner[5] protocol=4cf5b200 attributes=0x10 count=1 agent=0x3686af98 controller=0x36f9ec98
+owner[6] protocol=4cf5b200 attributes=0x2 count=5 agent=0x379cd718 controller=0x36f9ec98
+owner[7] protocol=4cf5b200 attributes=0x2 count=5 agent=0x379c9318 controller=0x36f9ec98
+owner[8] protocol=4cf5b200 attributes=0x4 count=4 agent=0x36cbbb98 controller=0x36f9ec98
+owner[9] protocol=4cf5b200 attributes=0x2 count=4 agent=0x379cb518 controller=0x36f9ec98
+owner[10] protocol=09576e91 attributes=0x1 count=252 agent=0x3b9def98 controller=0
+owner[11] protocol=09576e91 attributes=0x2 count=4 agent=0x3686af98 controller=0x36f9ec98
+owner[12] protocol=09576e91 attributes=0x8 count=1 agent=0x3686af98 controller=0x367aaa98
+owner[13] protocol=09576e91 attributes=0x4 count=5 agent=0x36b73b98 controller=0x36f9ec98
+owner[14] protocol=09576e91 attributes=0x4 count=5 agent=0x36b7d118 controller=0x36f9ec98
+owner[15] protocol=09576e91 attributes=0x4 count=5 agent=0x379cd718 controller=0x36f9ec98
+owner[16] protocol=09576e91 attributes=0x4 count=5 agent=0x36d09818 controller=0x36f9ec98
+owner[17] protocol=09576e91 attributes=0x4 count=5 agent=0x36cb9118 controller=0x36f9ec98
+owner[18] protocol=09576e91 attributes=0x4 count=5 agent=0x36d05d18 controller=0x36f9ec98
+display child: record=12 handle=0x367aaa98 status=0
+release candidate: agent=0x3686af98 image=0x3686af98 source=0x36f9ec98 base=0x3c9d2000 bytes=161696 version=0x70009 code_type=3 children=1 sha256=58b90b875598b6d642a9aefb414c2a95917842ac41162a5465fa97a77859a448
+diag: GOP handles=2 status=0 owner_children=1
+diag: gop[0] handle=0x36a55398 mode=1 fb=0x4000000000 size=0x870000 1920x1080 path=0 pci_parent=0 ours=0 console=1
+diag: gop[1] handle=0x367aaa98 mode=1 fb=0x4000000000 size=0x870000 1920x1080 path=1 pci_parent=0x36f9ec98 ours=1 console=0
+diag: GopCount status=0 screens=1 rest=0; console_out=0x36a55398 gpu=0x36f9ec98
+release preflight: slot=0:1:0.0 bar0=0x61000000 attributes=0x300 driver=1 display_children=1 bme_entry=0
+display child[0]: screen gop=1 1920x1080 stride=2048 format=1 fb=0x4000000000 size=0x870000
+release preflight: status=0
+Checks passed.
+choice: unlock
+
+Releasing the display; the screen may freeze or go blank until Windows starts.
+Unlock chosen: one physical attempt, no retries
+release: intent; stopping the GPU's firmware driver once
+driver release: status=0 refresh=0 same_pci=1
+ownership: records=15 exclusive=1 status=0
+owner[0] protocol=3bc1b285 attributes=0x1 count=5 agent=0x3b9def98 controller=0
+owner[1] protocol=4006c0c1 attributes=0x1 count=1 agent=0x3b9def98 controller=0
+owner[2] protocol=4cf5b200 attributes=0x1 count=137 agent=0x3b9def98 controller=0
+owner[3] protocol=4cf5b200 attributes=0x2 count=5 agent=0x379cd718 controller=0x36f9ec98
+owner[4] protocol=4cf5b200 attributes=0x2 count=5 agent=0x379c9318 controller=0x36f9ec98
+owner[5] protocol=4cf5b200 attributes=0x4 count=4 agent=0x36cbbb98 controller=0x36f9ec98
+owner[6] protocol=4cf5b200 attributes=0x2 count=4 agent=0x379cb518 controller=0x36f9ec98
+owner[7] protocol=09576e91 attributes=0x1 count=264 agent=0x3b9def98 controller=0
+owner[8] protocol=09576e91 attributes=0x2 count=4 agent=0x3686af98 controller=0x36f9ec98
+owner[9] protocol=09576e91 attributes=0x4 count=5 agent=0x36b73b98 controller=0x36f9ec98
+owner[10] protocol=09576e91 attributes=0x4 count=5 agent=0x36b7d118 controller=0x36f9ec98
+owner[11] protocol=09576e91 attributes=0x4 count=5 agent=0x379cd718 controller=0x36f9ec98
+owner[12] protocol=09576e91 attributes=0x4 count=5 agent=0x36d09818 controller=0x36f9ec98
+owner[13] protocol=09576e91 attributes=0x4 count=5 agent=0x36cb9118 controller=0x36f9ec98
+owner[14] protocol=09576e91 attributes=0x4 count=5 agent=0x36d05d18 controller=0x36f9ec98
+decode restore intent: saved_command=0x3 current_command=0 missing=0x3
+decode enable status=0
+release: status=0
+asset request: gpu-unlock/610.43.03/gsp_ga10x.bin
+asset result: gpu-unlock/610.43.03/gsp_ga10x.bin error=0 bytes=84277400
+asset cache cleanup: gpu-unlock/610.43.03/gsp_ga10x.bin devres_released=0
+driver probe resources: phase=entry empty=1
+asset request: gpu-unlock/610.43.03/v67-ad102-610.43.03-four-plm.bin
+asset result: gpu-unlock/610.43.03/v67-ad102-610.43.03-four-plm.bin error=0 bytes=64000
+asset cache cleanup: gpu-unlock/610.43.03/v67-ad102-610.43.03-four-plm.bin devres_released=0
+asset request: gpu-unlock/610.43.03/gsp_boot_ad102.bin
+asset result: gpu-unlock/610.43.03/gsp_boot_ad102.bin error=0 bytes=36864
+asset cache cleanup: gpu-unlock/610.43.03/gsp_boot_ad102.bin devres_released=0
+asset request: gpu-unlock/610.43.03/gsp_boot_desc_ad102.bin
+asset result: gpu-unlock/610.43.03/gsp_boot_desc_ad102.bin error=0 bytes=84
+asset cache cleanup: gpu-unlock/610.43.03/gsp_boot_desc_ad102.bin devres_released=0
+asset geometry: image=84226048 signature=4096 boot=36864 code=0x4800 data=0x800 manifest=0 parse=0
+asset request: gpu-unlock/610.43.03/booter_load_ad102.bin
+asset result: gpu-unlock/610.43.03/booter_load_ad102.bin error=0 bytes=57672
+asset cache cleanup: gpu-unlock/610.43.03/booter_load_ad102.bin devres_released=0
+claim: power=0 pm_cap=0x60 flags=0
+claim: command=0x3 capability=0x112c8de1 BAR_mask=0x1
+layout inputs: fb_mb=0x1ffc vga=0x1 mmu_plm=0x45cb8f mmu_lo=0x100000 mmu_hi=0x1efbff0 image=84226048 boot=36864
+layout mmu: lo=0x10000000 hi=0x1efbff000 hi_exclusive=0x1efc00000 constrain=0
+mmu lock ignored: high address is not the FB top
+layout decoded: fb=0x1ffc00000 vga=0x1ffb00000 mmu_valid=0 mmu_low=0x10000000 frts=0x100000 heap=0x5800000 result=0
+layout ranges: nonwpr=0x1f4f00000 wpr=0x1f5000000 heap=0x1f5100000 gsp=0x1fa9a0000 boot=0x1ff9f7000 frts=0x1ffa00000 end=0x1ffb00000 scrub_floor=0x1efc00000
+DMA masks: streaming=0xffffffffffff coherent=0xfffffffff requested=0xffffffff
+Booter signature: fuse_raw=0x1 version=1 signatures=2 size=768
+DMA buffers mapped: 2048
+DMA buffers mapped: 4096
+DMA buffers mapped: 6144
+DMA buffers mapped: 8192
+DMA buffers mapped: 10240
+DMA buffers mapped: 12288
+DMA buffers mapped: 14336
+DMA buffers mapped: 16384
+DMA buffers mapped: 18432
+DMA buffers mapped: 20480
+entry: plm=0xffffff8f ss0=0x2707044 ss1=0x5 wpr2_hi=0
+AD102 permission before-firmware: WPR_CFG[0x1fa7cc]=0x4cb8f before=0x4cb8f expected=0xfffff0ff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission before-firmware: FBPA[0x9a0148]=0xffffff0f before=0xffffff0f expected=0xffffffff required=0 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission before-firmware: WPR[0x1fa7c4]=0x4cb8f before=0x4cb8f expected=0xffffffff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission before-firmware: FEAT[0x823804]=0xffffff8f before=0xffffff8f expected=0xffffffff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 before-firmware: readout1=0x410080 fields=0 0 2 0 0 2 0 2 0 valid=1 full=0
+FWSEC: reading PROM at 0x300000
+FWSEC: PROM bytes=1048576 signature=0xaa55
+gpu_unlock: ROM chain: pos=0 data=0x52494350 bytes=64512 type=0 last=0
+gpu_unlock: ROM chain: pos=0xfc00 data=0x52494350 bytes=85504 type=0x3 last=0
+gpu_unlock: ROM chain: pos=0x24a00 data=0x5344504e bytes=24576 type=0xe0 last=0
+gpu_unlock: ROM chain: pos=0x2aa00 data=0x5344504e bytes=489472 type=0xe0 last=128
+gpu_unlock: ROM expansion: base=0xfc00 ext=0x24a00 adjust=0x14e00
+gpu_unlock: ROM BIT: offset=0x1b0 size=12 stride=6 tokens=19 adjust=0x14e00
+gpu_unlock: ROM ucode table: offset=0xa200b version=1 header=6 stride=6 entries=16
+gpu_unlock: FWSEC descriptor: offset=0x4536c ROM_bytes=1048576 header=0x32c0301
+gpu_unlock: FWSEC geometry: image_off=0x45698 size=0x10500 imem=0xf700 va=0 pa=0 dmem=0xd80 pa=0 pkc=0xb24 interface=0x1c engine=0x400 ucode=9 signatures=2 versions=0x3 bytes=768
+gpu_unlock: FWSEC interface: offset=0x1c version=1 header=4 stride=8 entries=2 FRTS=0x1ffa00000
+gpu_unlock: FWSEC mapper: version=3 size=64 cmd_offset=0xd40 cmd_size=64
+FWSEC fuse: raw=0x1 version=1
+gpu_unlock: FWSEC signature selection: versions=0x3 fuse_version=1 sig_bytes=384
+Bus Master enable intent: command=0x3 attributes=0x300
+Bus Master enabled: command=0x7 attributes=0x700 matched=1
+Falcon reset begin: base=0x110000
+poll timeout tolerated: reg=0x1100f4 last=0x47b7 mask=0x80000000 expected=0x80000000 budget_us=1000
+Falcon pre-reset timeout tolerated per HW bug 3419321
+Falcon reset done: base=0x110000 hwcfg=0x67b7 chip=0x197000a1
+Falcon DMA: base=0x110000 dest=0 offset=0 src=0x363a9000 size=0xf700 cmd=0x614
+Falcon DMA: base=0x110000 dest=0 offset=0 src=0x363b8700 size=0xd80 cmd=0x600
+Falcon start: base=0x110000 cpuctl=0x10 code_va=0 sig_dmem=0xb24 engine_mask=0x400 ucode=9 mailbox=0:0
+FWSEC result: scratch=0 expected_hi16=0
+FWSEC WPR2: low=0x1ffa000 high=0x1ffae00 expected_page=0x1ffa00 end=0x1ffb00000
+Falcon reset begin: base=0x840000
+poll timeout tolerated: reg=0x8400f4 last=0x67b7 mask=0x80000000 expected=0x80000000 budget_us=1000
+Falcon pre-reset timeout tolerated per HW bug 3419321
+Falcon reset done: base=0x840000 hwcfg=0x67b7 chip=0x197000a1
+Falcon DMA: base=0x840000 dest=0 offset=0x100 src=0x367ea000 size=0x7d00 cmd=0x614
+Falcon DMA: base=0x840000 dest=0 offset=0 src=0x367f1e00 size=0x6000 cmd=0x600
+Falcon start: base=0x840000 cpuctl=0x10 code_va=0x100 sig_dmem=0x10 engine_mask=0x1 ucode=3 mailbox=0:0x367d5000
+AD102 permission after-payload: WPR_CFG[0x1fa7cc]=0xfffff0ff before=0x4cb8f expected=0xfffff0ff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission after-payload: FBPA[0x9a0148]=0xffffff0f before=0xffffff0f expected=0xffffffff required=0 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission after-payload: WPR[0x1fa7c4]=0xffffffff before=0x4cb8f expected=0xffffffff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission after-payload: FEAT[0x823804]=0xffffffff before=0xffffff8f expected=0xffffffff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 after-payload: readout1=0x410080 fields=0 0 2 0 0 2 0 2 0 valid=1 full=0
+AD102 payload result: boot=0 halt=0 marker=0x67b00001 expected=0x67b00001 marker_ok=1 required_permissions=1 cpuctl=0x10 halted=1 debug=0xda550000 ss0=0x2707044 ss1=0x5
+selector read: SS0=0x2707044 expected_unlock=0x88888888
+selector write: SS0=0x88888888
+selector result: SS0=0x88888888 expected=0x88888888 matched=1
+selector read: SS1=0x5 expected_unlock=0x8
+selector write: SS1=0x8
+selector result: SS1=0x8 expected=0x8 matched=1
+AD102 selectors-applied: readout1=0 fields=0 0 0 0 0 0 0 0 0 valid=1 full=1
+pre-FLR selectors: ss0=0x88888888 expected=0x88888888 ss1=0x8 expected=0x8
+AD102 pre-FLR: readout1=0 fields=0 0 0 0 0 0 0 0 0 valid=1 full=1
+PCIe FLR begin: BME=0 DMA retained, chip=0x197000a1
+PCIe FLR returned: result=0
+post-FLR BAR ready: chip=0x197000a1
+post-FLR GFW result: error=0 pci=0x28a010de plm=0x8b8f boot=0x3ff cpuctl=0x10 budget_us=2050000
+engine reset assert: phase=post-FLR base=0x840000 before=0 write=0x1
+engine reset propagation: phase=post-FLR base=0x840000 first=0x1 tenth=0x1
+engine reset asserted: phase=post-FLR base=0x840000 error=0 last=0x1
+engine reset release: phase=post-FLR base=0x840000 before=0x1 write=0
+engine reset released: phase=post-FLR base=0x840000 engine=0 hwcfg2=0x67b7
+post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+AD102 permission post-FLR: WPR_CFG[0x1fa7cc]=0x4cb8f before=0x4cb8f expected=0xfffff0ff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission post-FLR: FBPA[0x9a0148]=0xffffff0f before=0xffffff0f expected=0xffffffff required=0 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission post-FLR: WPR[0x1fa7c4]=0x4cb8f before=0x4cb8f expected=0xffffffff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 permission post-FLR: FEAT[0x823804]=0xffffffff before=0xffffff8f expected=0xffffffff required=1 valid=1 pci=0x28a010de chip=0x197000a1
+AD102 post-FLR: readout1=0 fields=0 0 0 0 0 0 0 0 0 valid=1 full=1
+driver probe resources: phase=handoff empty=1
+restore streaming mask: actual=0xffffffffffff expected=0xffffffffffff
+restore coherent mask: actual=0xfffffffff expected=0xfffffffff
+restore PCI command: actual=0x3 original=0x3 mask=0x6
+Transaction result=0 containment=0 safe=1 retained=0 started=1 quiesced=1 flrs=1 DMA_live=0
+POST-FLR SS0=0x88888888 SS1=0x8 unlock_matched=1
+stage=before_GOP_reconnect; transaction quiesced, DMA released, PCI restored
+claim close: status=0
+ConnectController: status=0
+POST-GOP SS0=0x88888888 SS1=0x8
+TRANSACTION OK: hardware readbacks passed, DMA released, display driver reconnected; final pre-Windows check follows unlogged
+Unlocked. Starting Windows.

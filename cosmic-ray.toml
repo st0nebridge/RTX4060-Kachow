@@ -1,0 +1,13 @@
+# Mutation testing. Run through bin/mutate.ps1, which sandboxes the user-profile
+# variables. Narrowed command: unit + regression suites only; the PowerShell-backed tests
+# are slow and cannot kill mutants that the unit suite misses. `python` resolves to .venv via
+# PATH (set by mutate.ps1): cosmic-ray splits the command POSIX-style and Windows cannot
+# launch a relative interpreter path from it (every mutant then reads INCOMPETENT).
+[cosmic-ray]
+module-path = "src/kachow"
+timeout = 60.0
+excluded-modules = []
+test-command = "python -m pytest -x -q -p no:cacheprovider tests/unit tests/regression -k \"not original_powershell\""
+
+[cosmic-ray.distributor]
+name = "local"

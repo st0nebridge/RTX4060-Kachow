@@ -1,0 +1,11 @@
+=== startup test 2026-10-28T06:40:52.3928000+00:00
+task start  uptime=120.2s  RTX=D3
+NVIDIA GeForce RTX 4060 Laptop GPU  torch 2.11.0+cu128  8192^3 x 50, best of 3
+  fp16_acc16     50.6 TFLOPS   ratio to fp16_acc16 = 1.00
+  fp16_acc32     30.2 TFLOPS   ratio to fp16_acc16 = 0.60
+  bf16_acc32     30.2 TFLOPS   ratio to fp16_acc16 = 0.60
+  tf32           14.5 TFLOPS   ratio to fp16_acc16 = 0.29
+FP32-accumulate tensor rate: LOCKED (half rate)
+{"fp16_acc16": 50.58, "fp16_acc32": 30.16, "bf16_acc32": 30.15, "tf32": 14.47}
+bench done  uptime=176.2s  RTX=D0
+task removed

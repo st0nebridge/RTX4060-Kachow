@@ -1,0 +1,7 @@
+RTX 4060 Laptop unlock build=dryrun profile=entryLatchedSs1Full
+RTX 4060 Laptop unlock (dryrun)
+Windows Boot Manager entry in BootOrder: found
+Secure Boot on: started through shim (MOK-verified image)
+PCI scan: 10de:28a0 functions found=1 status=0
+reg SS0 0x82381c = 0x2747060
+reg SS1 0x823820 = 0x5
